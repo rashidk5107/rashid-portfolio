@@ -9,11 +9,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { Form } from 'react-bootstrap';
+import Loader from '../../component/Loader';
 
 function EditProduct() {
     const navigate = useNavigate();
     const [productDetails, setProducts] = useState({});
     const { id } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [buttonLoading, setButtonLoading] = useState(false);
+
     const validationSchema = Yup.object().shape({
         name: Yup.string().required(),
         description: Yup.string().required(),
@@ -50,12 +54,16 @@ function EditProduct() {
             } catch (err) {
                 console.error('Error fetching users', err);
             }
+            finally{
+                setLoading(false);
+            }
         };
          getProductsById();
     }, [id, reset]);
 
     const onSubmit = async (formData) => {
         try {
+            setButtonLoading(true);
             console.log(formData);
             const payload = formData;
             const apiResponse = await commonHttp.put(`product/updateProductById/${id}`, payload);
@@ -65,7 +73,11 @@ function EditProduct() {
         } catch (error) {
             console.error('API Error:', error);
         }
+        finally{
+            setButtonLoading(false);
+        }
     };
+    if (loading) return <Loader />;
 
     return (
         <div>
@@ -161,8 +173,15 @@ function EditProduct() {
 
 
                     {/* Submit Button */}
-                    <Button variant="primary" type="submit">
-                        UPDATE
+                    <Button variant="primary" type="submit" disabled={buttonLoading}>
+                        {buttonLoading ? (
+                                <>
+                                    <Loader fullPage={false} size="sm" />
+                                    <span className="ms-2">Updating...</span>
+                                </>
+                            ) : (
+                                "Update"
+                            )}
                     </Button>
                 </Form>
             </Container>

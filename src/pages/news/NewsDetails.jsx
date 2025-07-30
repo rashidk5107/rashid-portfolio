@@ -5,11 +5,12 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import commonHttp from '../../service/commonHttp';
 import { useNavigate } from 'react-router-dom';
-
+import Loader from '../../component/Loader';
 function NewsDetails() {
     const navigate = useNavigate();
     const { id } = useParams();
     const [newsDetails, setNews] = useState({});
+    const [loading, setLoading] = useState(true);
 
     const gotoNews = ()=>{
         navigate('/dashboard/news')
@@ -25,12 +26,16 @@ function NewsDetails() {
             } catch (err) {
                 console.error('Error fetching users', err);
             }
+            finally {
+                setLoading(false); // Hide loader in any case
+            }
         };
 
 
         getNewsById();
     }, []); // runs once on component mount
-   
+    if (loading) return <Loader />;
+    
     return (
         <Container className="mt-4">
             <Card>

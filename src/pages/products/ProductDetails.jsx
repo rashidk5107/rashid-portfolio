@@ -6,11 +6,14 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import commonHttp from '../../service/commonHttp';
 import { useNavigate } from 'react-router-dom';
+import Loader from '../../component/Loader';
+
 
 function ProductDetails() {
     const { id } = useParams(); 
     const navigate = useNavigate();
     const [productDetails, setProducts] = useState({});
+    const [loading, setLoading] = useState(true);
 
     const gotoNews = ()=>{
         navigate('/dashboard/products')
@@ -25,12 +28,16 @@ function ProductDetails() {
             } catch (err) {
                 console.error('Error fetching users', err);
             }
+            finally {
+                setLoading(false); // Hide loader in any case
+            }
         };
 
 
         getProductById();
     }, []); // runs once on component mount
-   
+    if (loading) return <Loader />;
+    
     return (
         <Container className="mt-4">
             <Card>
@@ -68,7 +75,7 @@ function ProductDetails() {
                                 Updated: {new Date(productDetails.updatedAt).toLocaleString()}
                             </div>
 
-                            <Button variant="primary" onClick={gotoNews}>Back to News</Button>
+                            <Button variant="primary" onClick={gotoNews}>Back to Products</Button>
                         </Card.Body>
                     </Col>
                 </Row>
