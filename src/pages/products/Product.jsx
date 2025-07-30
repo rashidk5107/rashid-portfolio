@@ -36,21 +36,33 @@ function Products() {
     };
 
     const viewProduct = (item) => {
-        navigate(`view-product/${item.id}`)
+        navigate(`view-product/${item._id}`)
     };
 
     const editProduct = (item) => {
-        navigate(`edit-product/${item.id}`)
+        navigate(`edit-product/${item._id}`)
     };
 
-    const deleteProduct = async (user, index) => {
-        const confirmed = await notify.confirmDelete();
+    const deleteProduct = async (product, index) => {
+        try {
+            const confirmed = await notify.confirmDelete();
 
-        if (confirmed) {
-            notify.success("User deleted successfully.")
+            if (confirmed) {
+                const apiResponse = await commonHttp.delete(`product/deleteProductById/${product._id}`)
+                notify.success("News deleted successfully.");
+                const updatedData = [...products];
+                updatedData.splice(index, 1);
+                setProducts(updatedData);
+
+            }
+        }
+        catch (error) {
+            console.log(error)
         }
     };
+
     if (loading) return <Loader />;
+    
     return (
         <div>
             <Button variant="primary" size="sm" onClick={navigateOnCreateProduct}>Create New Product</Button>
@@ -66,18 +78,18 @@ function Products() {
                     </tr>
                 </thead>
                 <tbody>
-                    {products.map((products, index) => (
-                        <tr key={products.id}>
-                            <td>{products.id}</td>
-                            <td>{products.title}</td>
-                            <td>{products.brand}</td>
-                            <td>{products.category}</td>
-                            <td>{products.returnPolicy}</td>
+                    {products.map((product, index) => (
+                        <tr key={product._id}>
+                            <td>{product._id}</td>
+                            <td>{product.title}</td>
+                            <td>{product.brand}</td>
+                            <td>{product.category}</td>
+                            <td>{product.returnPolicy}</td>
 
                             <td>
-                                <Button variant="danger" size="sm" onClick={() => viewProduct(products)}>View</Button>
-                                <Button variant="primary" size="sm" onClick={() => editProduct(products)}>Edit</Button>
-                                <Button variant="danger" size="sm" onClick={() => deleteProduct(products)}>delete</Button>
+                                <Button variant="danger" size="sm" onClick={() => viewProduct(product)}>View</Button>
+                                <Button variant="primary" size="sm" onClick={() => editProduct(product)}>Edit</Button>
+                                <Button variant="danger" size="sm" onClick={() => deleteProduct(product)}>delete</Button>
                             </td>
                         </tr>
                     ))}

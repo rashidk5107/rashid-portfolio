@@ -11,14 +11,15 @@ import { useState } from 'react';
 
 function AddProduct() {
     const navigate = useNavigate();
+
     const [loading, setLoading] = useState(false);
     const validationSchema = Yup.object().shape({
         name: Yup.string().required(),
         description: Yup.string().required(),
-        price: Yup.string().required(),
+        price: Yup.number().required(),
         category: Yup.string().required(),
         brand: Yup.string().required(),
-        stock: Yup.string().required(),
+        stock: Yup.number().required(),
         isActive: Yup.boolean().required()
 
     });
@@ -28,7 +29,9 @@ function AddProduct() {
     });
 
     const onSubmit = async (formData) => {
+
         try {
+            setLoading(true)
             console.log(formData);
             const payload = formData;
             const apiResponse = await commonHttp.post('product/createProduct', payload);
@@ -39,14 +42,12 @@ function AddProduct() {
 
         } catch (error) {
             console.error('API Error:', error);
+            notify.warning(error.response?.data?.message || "Something went wrong");
         }
         finally {
-                setLoading(false); // Hide loader in any case
-            }
-        
-       
+            setLoading(false); // Hide loader in any case
+        }
     };
-    
 
     return (
         <div>
@@ -136,7 +137,7 @@ function AddProduct() {
                             {...register("isActive", { required: "IsActive is required" })}
                             isInvalid={!!errors.isActive}
                         /> */}
-                        <Form.Select 
+                        <Form.Select
                             {...register("isActive", { required: "IsActive is required" })}
                             isInvalid={!!errors.isActive}>
 
@@ -150,7 +151,7 @@ function AddProduct() {
                     </Form.Group>
 
                     {/* Submit Button */}
-                     <Button variant="primary" type="submit" disabled={loading}>
+                    <Button variant="primary" type="submit" disabled={loading}>
                         {loading ? (
                             <>
                                 <Loader fullPage={false} size="sm" />
