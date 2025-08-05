@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import commonHttp from '../../service/commonHttp';
 import { useNavigate } from 'react-router-dom';
-import Loader from '../../component/Loader';
+import Loader from '../../component/common/Loader';
 function NewsDetails() {
     const navigate = useNavigate();
     const { id } = useParams();

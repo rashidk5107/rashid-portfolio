@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
 
-function DashboardHome() {
+function Dashboard() {
     return (
         <Container fluid className="mt-5">
             <Row className="align-items-center">
@@ -14,7 +14,7 @@ function DashboardHome() {
                     />
                 </Col>
                 <Col md={6}>
-                    <h1 className="mb-3">Hi, I'm <span style={{ color: "#007bff" }}>Rashid Khan</span></h1>
+                    <h1 className="mb-3">Hi, I'm <span style={{ color: "#007bff" }}> MD Rashid Khan</span></h1>
                     <p style={{ fontSize: "18px" }}>
                         I'm a passionate software developer with expertise in full-stack development,
                         artificial intelligence, and modern web technologies. Welcome to my interactive portfolio dashboard!
@@ -41,4 +41,4 @@ function DashboardHome() {
     );
 }
 
-export default DashboardHome;
+export default Dashboard;

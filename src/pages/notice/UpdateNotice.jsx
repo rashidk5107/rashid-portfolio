@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { Form } from 'react-bootstrap';
 import { type } from '@testing-library/user-event/dist/type';
-import Loader from '../../component/Loader';
+import Loader from '../../component/common/Loader';
 
 function UpdateNotice() {
     const navigate = useNavigate();

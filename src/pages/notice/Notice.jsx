@@ -5,12 +5,17 @@ import { useEffect, useState } from 'react';
 import commonHttp from '../../service/commonHttp';
 import { useNavigate } from 'react-router-dom';
 import { notify } from '../../service/notify';
-import Loader from '../../component/Loader';
+import Loader from '../../component/common/Loader';
+import MaterialIcon from '../../component/common/MaterialIcon';
+import ReactPaginate from "react-paginate";
 
 function Notice() {
     const navigate = useNavigate();
     const [notice, setNotice] = useState({});
     const [loading, setLoading] = useState(true);
+    const [pageCount, setPageCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 10;
 
 
     useEffect(() => {
@@ -22,7 +27,8 @@ function Notice() {
 
                 // ✅ Use notices array
                 const data = apiResponse.data.notices || [];
-                setNotice(data);
+                setNotice(data.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage));
+                setPageCount(Math.ceil(data.length / itemsPerPage));
 
             } catch (err) {
                 console.error('Error fetching users', err);
@@ -71,10 +77,15 @@ function Notice() {
     };
 
     if (loading) return <Loader />;
+    const handlePageClick = ({ selected }) => {
+        setCurrentPage(selected);
+    };
 
     return (
         <div>
-            <Button variant="primary" size="sm" onClick={navigateOnCreatNotice}>Create New Notice</Button>
+            <Button variant="dark" size="sm" onClick={navigateOnCreatNotice}>
+                <MaterialIcon name="MdCreateNewFolder" color="white" />
+                Create New Notice</Button>
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -92,14 +103,20 @@ function Notice() {
                         notice.map((notice, index) => (
                             <tr key={notice._id}>
                                 <td>{notice._id}</td>
-                                <td>{notice.title}</td>
+                                <td>{notice.title || "N/A"}</td>
                                 <td>{notice.message}</td>
                                 <td>{notice.type}</td>
-                                <td>{notice.createdBy?.name}</td>
+                                <td>{notice.createdBy?.name || "N/A"}</td>
                                 <td>
-                                    <Button variant="danger" size="sm" onClick={() => readNotice(notice)}>View</Button>
-                                    <Button variant="primary" size="sm" onClick={() => updateNotice(notice)}>Edit</Button>
-                                    <Button variant="danger" size="sm" onClick={() => deleteNotice(notice, index)}>Delete</Button>
+                                    <Button variant="success" size="sm" onClick={() => readNotice(notice)}>
+                                        <MaterialIcon name="MdOutlineRemoveRedEye" color="white" />
+                                    </Button>
+                                    <Button variant="warning" size="sm" onClick={() => updateNotice(notice)}>
+                                        <MaterialIcon name="MdEditSquare" color="white" />
+                                    </Button>
+                                    <Button variant="danger" size="sm" onClick={() => deleteNotice(notice, index)}>
+                                        <MaterialIcon name="MdDeleteSweep" color="white" />
+                                    </Button>
                                 </td>
                             </tr>
                         ))
@@ -112,6 +129,17 @@ function Notice() {
 
 
             </Table>
+            <ReactPaginate
+                previousLabel={<button className="btn btn-dark">⬅️ Prev</button>}
+                nextLabel={<button className="btn btn-dark">Next ➡️</button>}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={2}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination"}
+                activeClassName={"active"}
+            />
         </div>
     )
 }

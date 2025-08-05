@@ -5,21 +5,26 @@ import { useEffect, useState } from 'react';
 import commonHttp from '../../service/commonHttp';
 import { useNavigate } from 'react-router-dom';
 import { notify } from '../../service/notify';
-import Loader from '../../component/Loader';
+import Loader from '../../component/common/Loader';
+import MaterialIcon from '../../component/common/MaterialIcon';
+import ReactPaginate from 'react-paginate';
 
 function NewsList() {
     const navigate = useNavigate();
     const [newslist, setNews] = useState([]);
     const [loading, setLoading] = useState(true);
-
+    const [pageCount, setPageCount] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 10;
 
     useEffect(() => {
 
         const getAllnews = async () => {
             try {
                 const apiResponse = await commonHttp.get('news/getAllNews');
-                
-                setNews(apiResponse.data.data);
+                const data=apiResponse.data.data;
+                setNews(data.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage));
+                setPageCount(Math.ceil(data.length / itemsPerPage));
             } catch (err) {
                 console.error('Error fetching users', err);
             } finally {
@@ -66,10 +71,15 @@ function NewsList() {
     };
 
     if(loading) return <Loader />;
+    const handlePageClick = ({ selected }) => {
+        setCurrentPage(selected);
+    };
     
     return (
         <div>
-            <Button variant="primary" size="sm" onClick={navigateOnCreatenews}>Create New News</Button>
+            <Button variant="dark" size="sm" onClick={navigateOnCreatenews}>
+                <MaterialIcon name="MdCreateNewFolder" color="white" />
+                Create New News</Button>
             <Table striped bordered hover>
                 <thead>
                     <tr>
@@ -84,22 +94,39 @@ function NewsList() {
                 <tbody>
                     {newslist.map((news, index) => (
                         <tr key={news._id}>
-                            <td>{news._id}</td>
+                            <td>{news._id||"N/A"}</td>
                             <td>{news.title}</td>
                             <td>{news.author}</td>
                             <td>{news.description}</td>
-                            <td>{news.category?.name}</td>
+                            <td>{news.category?.name || "N/A"}</td>
 
                             <td>
-                                <Button variant="danger" size="sm" onClick={() => viewNews(news)}>View</Button>
-                                <Button variant="primary" size="sm" onClick={() => editNews(news)}>Edit</Button>
-                                <Button variant="danger" size="sm" onClick={() => deleteNews(news, index)}>delete</Button>
+                                <Button variant="success" size="sm" onClick={() => viewNews(news)}>
+                                    <MaterialIcon name="MdOutlineRemoveRedEye" color="white" />
+                                </Button>
+                                <Button variant="warning" size="sm" onClick={() => editNews(news)}>
+                                    <MaterialIcon name="MdEditSquare" color="white" />
+                                </Button>
+                                <Button variant="danger" size="sm" onClick={() => deleteNews(news, index)}>
+                                    <MaterialIcon name="MdDeleteSweep" color="white" />
+                                </Button>
                             </td>
                         </tr>
                     ))}
 
                 </tbody>
             </Table>
+            <ReactPaginate
+                previousLabel={<button className="btn btn-dark">⬅️ Prev</button>}
+                nextLabel={<button className="btn btn-dark">Next ➡️</button>}
+                breakLabel={"..."}
+                pageCount={pageCount}
+                marginPagesDisplayed={1}
+                pageRangeDisplayed={2}
+                onPageChange={handlePageClick}
+                containerClassName={"pagination"}
+                activeClassName={"active"}
+            />
         </div>
     )
 }

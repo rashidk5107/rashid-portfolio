@@ -6,13 +6,17 @@ import { Form, Button, Container } from 'react-bootstrap';
 import commonHttp from '../../service/commonHttp';
 import { notify } from '../../service/notify';
 import { useNavigate } from 'react-router-dom';
-import Loader from '../../component/Loader';
+import Loader from '../../component/common/Loader';
 import { useState } from 'react';
+import ImageUploader from '../../component/common/ImageUploader';
 
 function AddProduct() {
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
+    const [file, setFile] = useState(null);
+
+
     const validationSchema = Yup.object().shape({
         name: Yup.string().required(),
         description: Yup.string().required(),
@@ -21,8 +25,13 @@ function AddProduct() {
         brand: Yup.string().required(),
         stock: Yup.number().required(),
         isActive: Yup.boolean().required()
-
     });
+
+    const handleFileSelect = (selected) => {
+        setFile(selected);
+        console.log('Selected file:', selected);
+    };
+
 
     const { register, reset, handleSubmit, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema)
@@ -32,7 +41,6 @@ function AddProduct() {
 
         try {
             setLoading(true)
-            console.log(formData);
             const payload = formData;
             const apiResponse = await commonHttp.post('product/createProduct', payload);
             console.log(apiResponse);
@@ -148,6 +156,14 @@ function AddProduct() {
                         <Form.Control.Feedback type="invalid">
                             {errors.isActive?.message}
                         </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group controlId="formImage" className="mb-3">
+                        <Form.Label>Product Image</Form.Label>
+                        <ImageUploader
+                            config={{ allowedTypes: ['image/jpeg', 'image/png'], maxSizeMB: 1,enablePreview:true }}
+                            onFileSelect={handleFileSelect}
+                        />
+
                     </Form.Group>
 
                     {/* Submit Button */}

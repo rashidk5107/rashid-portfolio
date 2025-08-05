@@ -1,42 +1,12 @@
 
 import { Card,  Container, Row, Col, Badge } from 'react-bootstrap';
-import Table from 'react-bootstrap/Table';
-import Button from 'react-bootstrap/Button';
-import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import commonHttp from '../../service/commonHttp';
-import { useNavigate } from 'react-router-dom';
-import Loader from '../../component/Loader';
+import Loader from '../../component/common/Loader';
 
 
-function ProductDetails() {
-    const { id } = useParams(); 
-    const navigate = useNavigate();
-    const [productDetails, setProducts] = useState({});
-    const [loading, setLoading] = useState(true);
-
-    const gotoNews = ()=>{
-        navigate('/dashboard/products')
-    }
-    
-    useEffect(() => {
-
-        const getProductById = async () => {
-            try {
-                const productData = await commonHttp.get(`product/getProductById/${id}`);
-                setProducts(productData.data.singleProduct);
-            } catch (err) {
-                console.error('Error fetching users', err);
-            }
-            finally {
-                setLoading(false); // Hide loader in any case
-            }
-        };
-
-
-        getProductById();
-    }, []); // runs once on component mount
-    if (loading) return <Loader />;
+function ProductDetails({product}) {
+    const [productDetails, setProducts] = useState(product);
     
     return (
         <Container className="mt-4">
@@ -74,12 +44,11 @@ function ProductDetails() {
                                 Created: {new Date(productDetails.createdAt).toLocaleString()} <br />
                                 Updated: {new Date(productDetails.updatedAt).toLocaleString()}
                             </div>
-
-                            <Button variant="primary" onClick={gotoNews}>Back to Products</Button>
                         </Card.Body>
                     </Col>
                 </Row>
             </Card>
+            
         </Container>
     )
 }

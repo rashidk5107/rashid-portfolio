@@ -1,10 +1,9 @@
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Users from './pages/users/Users';
 import DashboardLayout from './layouts/DashboardLayout';
-import DashboardHome from './pages/DashboardHome';
 import Products from './pages/products/Product';
 import AddProduct from './pages/products/AddProduct';
 import UserDetails from './pages/users/UserDetails';
@@ -26,56 +25,67 @@ import NoticeLayout from './layouts/NoticeLayout';
 import Notice from './pages/notice/Notice';
 import ReadNotice from './pages/notice/ReadNotice';
 import UpdateNotice from './pages/notice/UpdateNotice';
+import Dashboard from './pages/dashboard/Dashboard';
+import { AuthProvider } from './context/AuthContext';
+import UserProfile from './pages/auth/UserProfile';
+import ProtectedRoute from './guards/ProtectedRoute';
 function App() {
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
-      <Router>
+      <AuthProvider>
+        <Router>
 
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            {/* Nested Routes */}
-            <Route path="" element={<DashboardHome />} />
+          <Routes>
+            <Route path="/" element={<Login />} />
+            {/* Protected Dashboard Routes */}
+            <Route element={<ProtectedRoute />}>
 
-            {/* Nested Users Routes */}
-            <Route path="users" element={<UsersLayout />}>
-              <Route index element={<Users />} />
-              <Route path="add-user" element={<AddUser />} />
-              <Route path="view-user/:userId" element={<UserDetails />} />
-              <Route path="edit-user/:userId" element={<EditUser />} />
+            <Route path="/dashboard" element={<DashboardLayout />}>
+              {/* Nested Routes */}
+              <Route path="" element={<Dashboard />} />
+              <Route path="profile" element={<UserProfile />} />
+
+              {/* Nested Users Routes */}
+              <Route path="users" element={<UsersLayout />}>
+                <Route index element={<Users />} />
+                <Route path="add-user" element={<AddUser />} />
+                <Route path="view-user/:userId" element={<UserDetails />} />
+                <Route path="edit-user/:userId" element={<EditUser />} />
+              </Route>
+
+              {/* Nested Users Routes */}
+              <Route path="products" element={<ProductLayout />}>
+                <Route index element={<Products />} />
+                <Route path="add-product" element={<AddProduct />} />
+                <Route path="view-product/:id" element={<ProductDetails />} />
+                <Route path="edit-product/:id" element={<EditProduct />} />
+              </Route>
+
+              <Route path="news" element={<NewsLayout />}>
+                <Route index element={<NewsList />} />
+                <Route path="add-news" element={<AddNews />} />
+                <Route path="view-news/:id" element={<NewsDetails />} />
+                <Route path="edit-news/:id" element={<EditNews />} />
+              </Route>
+              
+              <Route path="notice" element={<NoticeLayout/>}>
+                <Route index element={<Notice />} />
+                <Route path="add-notice" element={<CreateNotice />} />
+                <Route path="view-notice/:id" element={<ReadNotice />} />
+                <Route path="edit-notice/:id" element={<UpdateNotice />} />
+              </Route>
+
+
             </Route>
-
-            {/* Nested Users Routes */}
-            <Route path="products" element={<ProductLayout />}>
-              <Route index element={<Products />} />
-              <Route path="add-product" element={<AddProduct />} />
-              <Route path="view-product/:id" element={<ProductDetails />} />
-              <Route path="edit-product/:id" element={<EditProduct />} />
             </Route>
-
-            <Route path="news" element={<NewsLayout />}>
-              <Route index element={<NewsList />} />
-              <Route path="add-news" element={<AddNews />} />
-              <Route path="view-news/:id" element={<NewsDetails />} />
-              <Route path="edit-news/:id" element={<EditNews />} />
-            </Route>
-            
-            <Route path="notice" element={<NoticeLayout/>}>
-              <Route index element={<Notice />} />
-              <Route path="add-notice" element={<CreateNotice />} />
-              <Route path="view-notice/:id" element={<ReadNotice />} />
-              <Route path="edit-notice/:id" element={<UpdateNotice />} />
-            </Route>
-
-
-          </Route>
-
-        </Routes>
-      </Router>
+          </Routes>
+        </Router>
+      </AuthProvider>
     </>
 
   );
 }
+
 
 export default App;

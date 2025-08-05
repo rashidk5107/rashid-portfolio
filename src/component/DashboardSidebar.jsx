@@ -8,7 +8,7 @@ function DashboardSidebar() {
         <div>
 
             <Nav defaultActiveKey="/dashboard" className="flex-column">
-                <Nav.Link as={Link} to="/dashboard/dashboardhome">Dashboard</Nav.Link>
+                <Nav.Link as={Link} to="/dashboard">Dashboard</Nav.Link>
                 <Nav.Link as={Link} to="/dashboard/users">Users</Nav.Link>
                 <Nav.Link as={Link} to="/dashboard/products">Products</Nav.Link>
                 <Nav.Link as={Link} to="/dashboard/news">News</Nav.Link>
