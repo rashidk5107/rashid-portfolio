@@ -29,6 +29,10 @@ import Dashboard from './pages/dashboard/Dashboard';
 import { AuthProvider } from './context/AuthContext';
 import UserProfile from './pages/auth/UserProfile';
 import ProtectedRoute from './guards/ProtectedRoute';
+import PdfUploader from './pages/pdfEditor/pdf';
+import PdfEditor from './pages/pdfEditor/edit';
+import Pdf from './layouts/Pdf';
+
 function App() {
   return (
     <>
@@ -41,43 +45,48 @@ function App() {
             {/* Protected Dashboard Routes */}
             <Route element={<ProtectedRoute />}>
 
-            <Route path="/dashboard" element={<DashboardLayout />}>
-              {/* Nested Routes */}
-              <Route path="" element={<Dashboard />} />
-              <Route path="profile" element={<UserProfile />} />
+              <Route path="/dashboard" element={<DashboardLayout />}>
+                {/* Nested Routes */}
+                <Route path="" element={<Dashboard />} />
+                <Route path="profile" element={<UserProfile />} />
 
-              {/* Nested Users Routes */}
-              <Route path="users" element={<UsersLayout />}>
-                <Route index element={<Users />} />
-                <Route path="add-user" element={<AddUser />} />
-                <Route path="view-user/:userId" element={<UserDetails />} />
-                <Route path="edit-user/:userId" element={<EditUser />} />
+                {/* Nested Users Routes */}
+                <Route path="users" element={<UsersLayout />}>
+                  <Route index element={<Users />} />
+                  <Route path="add-user" element={<AddUser />} />
+                  <Route path="view-user/:userId" element={<UserDetails />} />
+                  <Route path="edit-user/:userId" element={<EditUser />} />
+                </Route>
+
+                {/* Nested Users Routes */}
+                <Route path="products" element={<ProductLayout />}>
+                  <Route index element={<Products />} />
+                  <Route path="add-product" element={<AddProduct />} />
+                  <Route path="view-product/:id" element={<ProductDetails />} />
+                  <Route path="edit-product/:id" element={<EditProduct />} />
+                </Route>
+
+                <Route path="news" element={<NewsLayout />}>
+                  <Route index element={<NewsList />} />
+                  <Route path="add-news" element={<AddNews />} />
+                  <Route path="view-news/:id" element={<NewsDetails />} />
+                  <Route path="edit-news/:id" element={<EditNews />} />
+                </Route>
+
+                <Route path="notice" element={<NoticeLayout />}>
+                  <Route index element={<Notice />} />
+                  <Route path="add-notice" element={<CreateNotice />} />
+                  <Route path="view-notice/:id" element={<ReadNotice />} />
+                  <Route path="edit-notice/:id" element={<UpdateNotice />} />
+                </Route>
+
+                <Route path="pdf" element={<Pdf />}>
+                  <Route index element={<PdfUploader />} />
+                  <Route path="add-pdf" element={<PdfEditor />} />
+                </Route>
+
+
               </Route>
-
-              {/* Nested Users Routes */}
-              <Route path="products" element={<ProductLayout />}>
-                <Route index element={<Products />} />
-                <Route path="add-product" element={<AddProduct />} />
-                <Route path="view-product/:id" element={<ProductDetails />} />
-                <Route path="edit-product/:id" element={<EditProduct />} />
-              </Route>
-
-              <Route path="news" element={<NewsLayout />}>
-                <Route index element={<NewsList />} />
-                <Route path="add-news" element={<AddNews />} />
-                <Route path="view-news/:id" element={<NewsDetails />} />
-                <Route path="edit-news/:id" element={<EditNews />} />
-              </Route>
-              
-              <Route path="notice" element={<NoticeLayout/>}>
-                <Route index element={<Notice />} />
-                <Route path="add-notice" element={<CreateNotice />} />
-                <Route path="view-notice/:id" element={<ReadNotice />} />
-                <Route path="edit-notice/:id" element={<UpdateNotice />} />
-              </Route>
-
-
-            </Route>
             </Route>
           </Routes>
         </Router>

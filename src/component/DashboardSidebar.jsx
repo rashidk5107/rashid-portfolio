@@ -13,6 +13,9 @@ function DashboardSidebar() {
                 <Nav.Link as={Link} to="/dashboard/products">Products</Nav.Link>
                 <Nav.Link as={Link} to="/dashboard/news">News</Nav.Link>
                 <Nav.Link as={Link} to="/dashboard/notice">Notice</Nav.Link>
+                <Nav.Link as={Link} to="/dashboard/pdfupload">PDF Uploader</Nav.Link>
+
+
 
             </Nav>
         </div>
